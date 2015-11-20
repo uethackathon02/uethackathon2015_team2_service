@@ -17,7 +17,7 @@ class UserController extends Controller {
 			'email',
 			'password',
 			'mssv',
-			'class',
+			'lop',
 			'type',
 			'isOfficer',
 		] );
@@ -46,7 +46,7 @@ class UserController extends Controller {
 			'email'     => $all['email'],
 			'password'  => $all['password'],
 			'msv'       => $all['mssv'],
-			'class'     => $all['class'],
+			'class'     => $all['lop'],
 			'type'      => $type,
 			'isOfficer' => $isOfficer,
 		] );
