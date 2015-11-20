@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\User;
+use DateTimeZone;
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use stdClass;
+
+class UserController extends Controller {
+	public function register( Request $request ) {
+		onlyAllowPostRequest( $request );
+
+		$all = $request->only( [
+			'email',
+			'password',
+			'msv',
+			'class',
+			'type',
+			'isOfficer',
+		] );
+
+		if ( $all['type'] == '' || ! isset( $all['type'] ) ) {
+			$all['type'] = 'student';
+		}
+
+		/**
+		 * Dữ liệu trả về
+		 */
+		$response = new stdClass();
+
+		$user = User::all()->where( 'email', $all['email'] );
+		if ( $user > 0 ) {
+			$response->error     = true;
+			$response->error_msg = 'Đã tồn tại người dùng với email '
+			                       . $all['email'];
+
+			return response()->json( $response );
+		}
+
+		$isOfficer = false;//Mặc định là sinh viên không phải là cán bộ lớp
+		$user      = User::create( [
+			'email'     => $all['email'],
+			'password'  => $all['password'],
+			'msv'       => $all['msv'],
+			'class'     => $all['class'],
+			'type'      => $all['type'],
+			'isOfficer' => $isOfficer,
+		] );
+
+		$response->error    = false;
+		$response->uid      = $user->getAttribute( 'id' );
+		$user_x             = new stdClass();
+		$user_x->name       = $user->getAttribute( 'name' );
+		$user_x->email      = $user->getAttribute( 'email' );
+		$user_x->created_at = $user->getAttribute( 'created_at' )
+		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
+		                           ->format( 'Y-m-d H:m:i' );
+		$user_x->updated_at = $user->getAttribute( 'updated_at' )
+		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
+		                           ->format( 'Y-m-d H:m:i' );
+
+		$response->user = $user_x;
+
+		return response()->json( $response );
+	}
+
+	public function login( Request $request ) {
+		onlyAllowPostRequest( $request );
+
+		$all = $request->only( [
+			'email',
+			'pass',
+		] );
+
+		/**
+		 * Dữ liệu trả về
+		 */
+		$response = new stdClass();
+
+		$users = User::all()->where( 'email', $all['email'] );
+		if ( $users->count() > 0 ) {//Không tồn tại người dùng
+			$response->error     = true;
+			$response->error_msg = 'Không tồn tại người dùng này';
+
+			return response()->json( $response );
+		}
+
+		$user        = $users->first();
+		$pass_encode = md5( $all['pass'] );
+		if ( $user->getAttribute( 'pass' ) != $pass_encode ) {//Sai mật khẩu
+			$response->error     = true;
+			$response->error_msg = 'Mật khẩu của bạn không đúng!';
+
+			return response()->json( $response );
+		}
+
+		$response->error = false;
+		$response->uid   = $user->getAttribute( 'id' );
+		/**
+		 * Trả về dữ liệu người dùng
+		 */
+		$user_x             = new stdClass();
+		$user_x->name       = $user->getAttribute( 'name' );
+		$user_x->email      = $user->getAttribute( 'email' );
+		$user_x->created_at = $user->getAttribute( 'created_at' )
+		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
+		                           ->format( 'Y-m-d H:m:i' );
+		$user_x->updated_at = $user->getAttribute( 'updated_at' )
+		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
+		                           ->format( 'Y-m-d H:m:i' );
+
+		$response->user = $user_x;
+
+		return response()->json( $response );
+	}
+}

@@ -15,4 +15,11 @@ Route::get( '/', function () {
 	return view( 'welcome' );
 } );
 
+Route::group( [ 'prefix' => 'v1' ], function () {
+	Route::any( 'login', 'UserController@login' );
+
+	Route::any( 'register', 'UserController@register' );
+} );
+
+
 Route::get( 'test', 'TestController@test_helper' );

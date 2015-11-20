@@ -6,6 +6,15 @@
  * Time: 7:08 PM
  */
 
-function test() {
-	echo 'ok men';
+/**
+ * Only allowed POST Request | Abort 404 when request different POST request
+ *
+ * @param $request
+ */
+function onlyAllowPostRequest( $request ) {
+	if ( method_exists( $request, 'getMethod' )
+	     && $request->getMethod() !== 'POST'
+	) {
+		abort( 404 );
+	}
 }
