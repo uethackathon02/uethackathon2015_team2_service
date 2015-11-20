@@ -57,6 +57,7 @@ class UserController extends Controller {
 		$user_x->email      = $user->getAttribute( 'email' );
 		$user_x->type       = $user->getAttribute( 'type' );
 		$user_x->lop       = $user->getAttribute( 'class' );
+		$user_x->mssv       = $user->getAttribute( 'msv' );
 		$user_x->created_at = $user->getAttribute( 'created_at' )
 		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
 		                           ->format( 'Y-m-d H:m:i' );
