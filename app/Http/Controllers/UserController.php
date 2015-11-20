@@ -18,13 +18,11 @@ class UserController extends Controller {
 			'password',
 			'mssv',
 			'lop',
-			'type',
-			'isOfficer',
 		] );
 
-		if ( $all['type'] == '' || ! isset( $all['type'] ) ) {
-			$all['type'] = 'student';
-		}
+//		if ( $all['type'] == '' || ! isset( $all['type'] ) ) {
+//			$all['type'] = 'student';
+//		}
 
 		/**
 		 * Dữ liệu trả về
@@ -32,7 +30,8 @@ class UserController extends Controller {
 		$response = new stdClass();
 
 		$user = User::all()->where( 'email', $all['email'] );
-		if ( $user > 0 ) {
+
+		if ( $user->count() > 0 ) {
 			$response->error     = true;
 			$response->error_msg = 'Đã tồn tại người dùng với email '
 			                       . $all['email'];
@@ -44,7 +43,7 @@ class UserController extends Controller {
 		$type      = 'student';//Mặc định người dùng đăng ký là sinh viên
 		$user      = User::create( [
 			'email'     => $all['email'],
-			'password'  => $all['password'],
+			'password'  => md5( $all['password'] ),
 			'msv'       => $all['mssv'],
 			'class'     => $all['lop'],
 			'type'      => $type,
@@ -56,6 +55,8 @@ class UserController extends Controller {
 		$user_x             = new stdClass();
 		$user_x->name       = $user->getAttribute( 'name' );
 		$user_x->email      = $user->getAttribute( 'email' );
+		$user_x->type       = $user->getAttribute( 'type' );
+		$user_x->lop       = $user->getAttribute( 'class' );
 		$user_x->created_at = $user->getAttribute( 'created_at' )
 		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
 		                           ->format( 'Y-m-d H:m:i' );
