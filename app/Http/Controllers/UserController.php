@@ -40,7 +40,7 @@ class UserController extends Controller {
 			return response()->json( $response );
 		}
 
-		$isOfficer = false;//Mặc định là sinh viên không phải là cán bộ lớp
+		$isOfficer = 0;//Mặc định là sinh viên không phải là cán bộ lớp
 		$type      = 'student';//Mặc định người dùng đăng ký là sinh viên
 		$user      = User::create( [
 			'email'     => $all['email'],
