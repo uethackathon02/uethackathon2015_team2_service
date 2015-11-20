@@ -16,7 +16,7 @@ class UserController extends Controller {
 		$all = $request->only( [
 			'email',
 			'password',
-			'msv',
+			'mssv',
 			'class',
 			'type',
 			'isOfficer',
@@ -41,12 +41,13 @@ class UserController extends Controller {
 		}
 
 		$isOfficer = false;//Mặc định là sinh viên không phải là cán bộ lớp
+		$type      = 'student';//Mặc định người dùng đăng ký là sinh viên
 		$user      = User::create( [
 			'email'     => $all['email'],
 			'password'  => $all['password'],
-			'msv'       => $all['msv'],
+			'msv'       => $all['mssv'],
 			'class'     => $all['class'],
-			'type'      => $all['type'],
+			'type'      => $type,
 			'isOfficer' => $isOfficer,
 		] );
 
