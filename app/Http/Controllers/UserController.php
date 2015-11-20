@@ -56,7 +56,7 @@ class UserController extends Controller {
 		$user_x->name       = $user->getAttribute( 'name' );
 		$user_x->email      = $user->getAttribute( 'email' );
 		$user_x->type       = $user->getAttribute( 'type' );
-		$user_x->lop       = $user->getAttribute( 'class' );
+		$user_x->lop        = $user->getAttribute( 'class' );
 		$user_x->mssv       = $user->getAttribute( 'msv' );
 		$user_x->created_at = $user->getAttribute( 'created_at' )
 		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
@@ -75,7 +75,7 @@ class UserController extends Controller {
 
 		$all = $request->only( [
 			'email',
-			'pass',
+			'password',
 		] );
 
 		/**
@@ -84,7 +84,7 @@ class UserController extends Controller {
 		$response = new stdClass();
 
 		$users = User::all()->where( 'email', $all['email'] );
-		if ( $users->count() > 0 ) {//Không tồn tại người dùng
+		if ( $users->count() < 0 ) {//Không tồn tại người dùng
 			$response->error     = true;
 			$response->error_msg = 'Không tồn tại người dùng này';
 
@@ -92,8 +92,9 @@ class UserController extends Controller {
 		}
 
 		$user        = $users->first();
-		$pass_encode = md5( $all['pass'] );
-		if ( $user->getAttribute( 'pass' ) != $pass_encode ) {//Sai mật khẩu
+		$pass_encode = md5( $all['password'] );
+
+		if ( $user->getAttribute( 'password' ) != $pass_encode ) {//Sai mật khẩu
 			$response->error     = true;
 			$response->error_msg = 'Mật khẩu của bạn không đúng!';
 
@@ -108,6 +109,9 @@ class UserController extends Controller {
 		$user_x             = new stdClass();
 		$user_x->name       = $user->getAttribute( 'name' );
 		$user_x->email      = $user->getAttribute( 'email' );
+		$user_x->type       = $user->getAttribute( 'type' );
+		$user_x->lop        = $user->getAttribute( 'class' );
+		$user_x->mssv       = $user->getAttribute( 'msv' );
 		$user_x->created_at = $user->getAttribute( 'created_at' )
 		                           ->setTimezone( new DateTimeZone( 'Asia/Ho_Chi_Minh' ) )
 		                           ->format( 'Y-m-d H:m:i' );
